@@ -12,6 +12,7 @@ urlpatterns = [
     path('', include('rest_auth.urls')),
     path('register/', include('rest_auth.registration.urls')),
 
-    # path('', views.ListTodo.as_view()),
-    # path('<int:pk>/', views.Detail.as_view()),  # extends from 'viewsets.ModelViewSet', these two views is no needed.
+    # extends from 'viewsets.ModelViewSet', these two views is no needed.
+    # path('todo/', views.ListTodo.as_view()),
+    # path('todo/<int:pk>/', views.Detail.as_view()),
 ]
