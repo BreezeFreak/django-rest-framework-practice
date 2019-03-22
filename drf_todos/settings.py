@@ -35,14 +35,19 @@ REST_FRAMEWORK = {
         # to solve a error while using POSTMAN to test -> "CSRF Failed: CSRF token missing or incorrect."
         'rest_framework.authentication.TokenAuthentication',
 
+        # ⬆
         # this two are different way to authorize. login, and request with what's given
         # and may be needs to turn off the django default middleware 'SessionMiddleware'
         # otherwise who login and without a token, can access the old views
         # test with postman or terminal
         # -> curl -X GET http://127.0.0.1:8000/users/ -H 'Authorization: Token xxxxxxxx'
+        # ⬇
 
         # 'rest_framework.authentication.SessionAuthentication',
-    ]
+    ],
+    'DEFAULT_RENDERER_CLASSES': (
+        'utils.render_response.CustomJsonRenderer',
+    )
 }
 
 # Application definition
