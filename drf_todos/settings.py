@@ -91,8 +91,7 @@ ROOT_URLCONF = 'drf_todos.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -152,3 +151,69 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# ================= logging ===================#
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{asctime}] [{module}] [{process:d}] [{levelname}] {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname}] {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
+    'handlers': {
+        # work for both DEBUG=True/False
+        'console': {
+            'level': 'DEBUG',
+            'formatter': 'verbose',
+            # 'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+        },
+        # only work for debug=False, aka production env
+        'prod_log_file': {
+            'level': 'DEBUG',
+            'formatter': 'verbose',
+            # 'filters': ['require_debug_false'],
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'prod.log'),
+            'maxBytes': 1024 * 1024 * 20,  # 20MB
+            'backupCount': 10,
+        },
+        'default_log_file': {
+            'level': 'DEBUG',
+            'formatter': 'verbose',
+            # 'filters': ['require_debug_false'],
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'default.log'),
+            'maxBytes': 1024 * 1024 * 20,  # 20MB
+            'backupCount': 10,
+        }
+        # Add Handler for Sentry for `warning` and above
+        # 'sentry': {
+        #     'level': 'WARNING',
+        #     'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+        # },
+    },
+    'loggers': {
+        '': {
+            'level': 'INFO',
+            'handlers': ['console', 'default_log_file'],
+        },
+        'admin': {
+            'level': 'INFO',
+            'handlers': ['prod_log_file'],
+            'propagate': False
+        }
+    },
+}

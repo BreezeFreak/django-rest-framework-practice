@@ -1,8 +1,16 @@
+import logging
 from collections import OrderedDict
+from typing import Any
 
+from django.contrib.auth.hashers import make_password
+from django.db.models import Model
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from rest_framework.validators import UniqueValidator
+
 from todo import models
+
+logger = logging.getLogger('admin')
 
 
 # class TodoSerializer(serializers.ModelSerializer):
@@ -16,6 +24,39 @@ from todo import models
 
 
 class UserSerializer(serializers.ModelSerializer):
+    userId = serializers.IntegerField(source='id', required=False, read_only=True)
+    lastName = serializers.CharField(error_messages={
+        'required': 'input a last name',
+    }, source='last_name')
+    createTime = serializers.CharField(source='date_joined', required=False)
+    isSuperuser = serializers.BooleanField(source='is_superuser')
+    active = serializers.BooleanField(source='is_active', required=False)
+    password = serializers.CharField(
+        error_messages={
+            'required': 'input a password',
+            'blank': 'blank password'
+        },
+        validators=[
+        ],
+        write_only=True,
+
+    )
+    username = serializers.CharField(
+        error_messages={
+            'required': 'input a username',
+            'blank': 'blank username',
+        },
+        validators=[
+            UniqueValidator(
+                queryset=User.objects.all(),
+                message='username exist already',
+            ),
+        ],
+    )
+
+    rolename = serializers.SerializerMethodField()
+    roleId = serializers.SerializerMethodField()
+
     class Meta:
         fields = (
             'id',
@@ -23,6 +64,16 @@ class UserSerializer(serializers.ModelSerializer):
             'password'
         )
         model = User
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
+
+    def update(self, instance: Model, validated_data: Any):
+        validated_data['password'] = make_password(validated_data['password'])
+        logger.info(f'testing if the password is correct{validated_data["password"]}')
+        instance = super(UserSerializer, self).update(instance, validated_data)
+        return instance
 
 
 class TodoSerializer(serializers.ModelSerializer):
