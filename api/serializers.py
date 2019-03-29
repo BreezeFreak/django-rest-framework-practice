@@ -24,13 +24,13 @@ logger = logging.getLogger('admin')
 
 
 class UserSerializer(serializers.ModelSerializer):
-    userId = serializers.IntegerField(source='id', required=False, read_only=True)
-    lastName = serializers.CharField(error_messages={
-        'required': 'input a last name',
-    }, source='last_name')
-    createTime = serializers.CharField(source='date_joined', required=False)
-    isSuperuser = serializers.BooleanField(source='is_superuser')
-    active = serializers.BooleanField(source='is_active', required=False)
+    # userId = serializers.IntegerField(source='id', required=False, read_only=True)
+    # lastName = serializers.CharField(error_messages={
+    #     'required': 'input a last name',
+    # }, source='last_name')
+    # createTime = serializers.CharField(source='date_joined', required=False)
+    # isSuperuser = serializers.BooleanField(source='is_superuser')
+    # active = serializers.BooleanField(source='is_active', required=False)
     password = serializers.CharField(
         error_messages={
             'required': 'input a password',
@@ -38,7 +38,7 @@ class UserSerializer(serializers.ModelSerializer):
         },
         validators=[
         ],
-        write_only=True,
+        # write_only=True,
 
     )
     username = serializers.CharField(
@@ -54,8 +54,8 @@ class UserSerializer(serializers.ModelSerializer):
         ],
     )
 
-    rolename = serializers.SerializerMethodField()
-    roleId = serializers.SerializerMethodField()
+    # rolename = serializers.SerializerMethodField()
+    # roleId = serializers.SerializerMethodField()
 
     class Meta:
         fields = (

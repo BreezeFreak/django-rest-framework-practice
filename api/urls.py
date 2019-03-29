@@ -25,4 +25,6 @@ urlpatterns = [
     # # extends from 'viewsets.ModelViewSet', these two views is no needed.
     # path('todo/', views.ListTodo.as_view()),
     # path('todo/<int:pk>/', views.Detail.as_view()),
+
+    # url(r'^users/', include('rest_auth.urls')),  # maybe its registered by router up there, this url doesnt work
 ]
